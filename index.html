@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Orologio Rosso">
+  <title>Orologio Digitale Rosso</title>
+  
+  <!-- Icona per iOS -->
+  <link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMjggMTI4Ij48cmVjdCB3aWR0aD0iMTI4IiBoZWlnaHQ9IjEyOCIgZmlsbD0iIzAwMCIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iNDAiIGZpbGw9IiNmZjAwMDAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGRvbWluYW50LWJhc2VsaW5lPSJtaWRkbGUiPjEyOjAwPC90ZXh0Pjwvc3ZnPg==">
+  
+  <!-- Manifest PWA -->
+  <link rel="manifest" href="data:application/json;base64,ewogICJuYW1lIjogIk9yb2xvZ2lvIFJvc3NvIiwKICAic2hvcnRfbmFtZSI6ICJPcm9sb2dpbyIsCiAgInN0YXJ0X3VybCI6ICIuIiwKICAiZGlzcGxheSI6ICJzdGFuZGFsb25lIiwKICAiYmFja2dyb3VuZF9jb2xvciI6ICIjMDAwMDAwIiwKICAidGhlbWVfY29sb3IiOiAiI2ZmMDAwMCIKfQ==">
+  
+  <style>
+    :root {
+      --rosso: rgb(255, 0, 0);
+      --bianco: rgb(255, 255, 255);
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+    
+    body {
+      background: black;
+      color: var(--rosso);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      height: -webkit-fill-available;
+      overflow: hidden;
+      padding: 20px;
+      touch-action: manipulation;
+    }
+    
+    #data {
+      font-size: 1.5rem;
+      margin-bottom: 10px;
+      text-align: center;
+      font-weight: 500;
+    }
+    
+    #orologio {
+      font-size: 5rem;
+      font-weight: 700;
+      letter-spacing: 2px;
+      margin: 20px 0;
+      text-align: center;
+    }
+    
+    @media (min-width: 768px) {
+      #orologio {
+        font-size: 8rem;
+      }
+      #data {
+        font-size: 2rem;
+      }
+    }
+    
+    #controlli {
+      margin-top: 30px;
+      width: 100%;
+      max-width: 400px;
+    }
+    
+    .gruppo-controllo {
+      margin-bottom: 15px;
+    }
+    
+    .gruppo-controllo label {
+      display: block;
+      margin-bottom: 5px;
+      color: var(--bianco);
+      font-size: 1rem;
+    }
+    
+    input[type="time"], button {
+      width: 100%;
+      padding: 12px;
+      border-radius: 8px;
+      border: none;
+      background: rgba(255, 255, 255, 0.1);
+      color: white;
+      font-size: 1rem;
+    }
+    
+    button {
+      background: var(--rosso);
+      color: black;
+      font-weight: bold;
+      margin-top: 10px;
+      cursor: pointer;
+    }
+    
+    input[type="range"] {
+      width: 100%;
+      height: 40px;
+      -webkit-appearance: none;
+      background: transparent;
+    }
+    
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 25px;
+      height: 25px;
+      border-radius: 50%;
+      background: var(--rosso);
+      cursor: pointer;
+    }
+    
+    input[type="range"]::-webkit-slider-runnable-track {
+      height: 5px;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 5px;
+    }
+    
+    #meteo {
+      margin-top: 20px;
+      font-size: 1rem;
+      color: var(--bianco);
+      text-align: center;
+      min-height: 24px;
+    }
+    
+    .avviso {
+      color: var(--bianco);
+      font-size: 0.8rem;
+      margin-top: 30px;
+      text-align: center;
+      opacity: 0.7;
+    }
+  </style>
+</head>
+<body>
+  <div id="data"></div>
+  <div id="orologio">00:00:00</div>
+  
+  <div id="controlli">
+    <div class="gruppo-controllo">
+      <label for="sveglia">Imposta Sveglia</label>
+      <input type="time" id="sveglia">
+      <button onclick="impostaSveglia()">Attiva Sveglia</button>
+    </div>
+    
+    <div class="gruppo-controllo">
+      <label for="lumSlider">Intensità Colore Rosso</label>
+      <input type="range" min="50" max="255" value="255" id="lumSlider">
+    </div>
+    
+    <div id="meteo"></div>
+  </div>
+  
+  <p class="avviso">Per un uso ottimale:<br>1. Aggiungi questa pagina alla Home<br>2. Imposta "Blocco automatico: Mai"<br>3. Tieni Safari aperto per la sveglia</p>
+
+  <script>
+    // Elementi DOM
+    const orologio = document.getElementById("orologio");
+    const dataEl = document.getElementById("data");
+    const meteoEl = document.getElementById("meteo");
+    const lumSlider = document.getElementById("lumSlider");
+    
+    // Variabili stato
+    let svegliaAttiva = false;
+    let svegliaOrario = null;
+    let notificaPermesso = false;
+    
+    // Controlla i permessi per le notifiche
+    document.addEventListener('DOMContentLoaded', () => {
+      // Richiedi permesso notifiche
+      if ('Notification' in window && Notification.permission !== 'granted') {
+        Notification.requestPermission().then(permesso => {
+          notificaPermesso = permesso === 'granted';
+        });
+      }
+      
+      // Imposta luminosità
+      lumSlider.addEventListener("input", () => {
+        const val = lumSlider.value;
+        orologio.style.color = `rgb(${val}, 0, 0)`;
+      });
+      
+      // Avvia orologio
+      aggiornaOrologio();
+      
+      // Mostra meteo dopo 2 secondi
+      setTimeout(mostraMeteo, 2000);
+      
+      // Verifica se siamo in modalità standalone (aggiunto alla Home)
+      if (window.navigator.standalone) {
+        document.querySelector('.avviso').innerHTML += '<br>✔ Modalità schermo intero attiva';
+      }
+    });
+    
+    // Aggiorna orologio con precisione
+    function aggiornaOrologio() {
+      const ora = new Date();
+      
+      // Formatta l'ora con 2 cifre (es. 08:05:09)
+      const ore = String(ora.getHours()).padStart(2, '0');
+      const minuti = String(ora.getMinutes()).padStart(2, '0');
+      const secondi = String(ora.getSeconds()).padStart(2, '0');
+      orologio.textContent = `${ore}:${minuti}:${secondi}`;
+      
+      // Formatta la data (es. "Mercoledì 17 Luglio 2024")
+      dataEl.textContent = ora.toLocaleDateString("it-IT", { 
+        weekday: 'long', 
+        year: 'numeric', 
+        month: 'long', 
+        day: 'numeric' 
+      });
+      
+      // Controlla sveglia ogni minuto
+      if (svegliaAttiva && secondi === '00') {
+        controllaSveglia();
+      }
+      
+      // Richiama la funzione al prossimo secondo
+      setTimeout(aggiornaOrologio, 1000 - ora.getMilliseconds());
+    }
+    
+    // Gestione sveglia
+    function impostaSveglia() {
+      const inputSveglia = document.getElementById("sveglia");
+      
+      if (!inputSveglia.value) {
+        alert("Seleziona un orario per la sveglia");
+        return;
+      }
+      
+      svegliaOrario = inputSveglia.value;
+      svegliaAttiva = true;
+      
+      // Mostra conferma con orario formattato
+      const [ore, minuti] = svegliaOrario.split(':');
+      alert(`Sveglia impostata per le ${ore}:${minuti}\n\nNota: Safari deve rimanere aperto per far suonare la sveglia`);
+    }
+    
+    function controllaSveglia() {
+      if (!svegliaAttiva) return;
+      
+      const ora = new Date();
+      const ore = String(ora.getHours()).padStart(2, '0');
+      const minuti = String(ora.getMinutes()).padStart(2, '0');
+      const oraAttuale = `${ore}:${minuti}`;
+      
+      if (svegliaOrario === oraAttuale) {
+        suonaSveglia();
+      }
+    }
+    
+    function suonaSveglia() {
+      // Crea vibrazione (supportata su iOS)
+      if ('vibrate' in navigator) {
+        navigator.vibrate([200, 100, 200]);
+      }
+      
+      // Mostra notifica
+      if (notificaPermesso) {
+        new Notification("⏰ Sveglia!", { 
+          body: "È ora di svegliarsi!",
+          vibrate: [200, 100, 200]
+        });
+      }
+      
+      // Crea alert con opzione per fermare
+      const conferma = confirm("⏰ SVEGLIA!\n\nFermare la sveglia?");
+      if (conferma) {
+        svegliaAttiva = false;
+      } else {
+        // Ripeti tra 1 minuto se non fermata
+        setTimeout(suonaSveglia, 60000);
+      }
+    }
+    
+    // Funzione meteo con fallback
+    async function mostraMeteo() {
+      try {
+        // Usa geolocalizzazione solo se permesso
+        const posizione = await new Promise((resolve, reject) => {
+          if (!navigator.geolocation) reject("Geolocalizzazione non supportata");
+          
+          navigator.geolocation.getCurrentPosition(
+            resolve, 
+            () => reject("Posizione non disponibile"),
+            { timeout: 5000 }
+          );
+        });
+        
+        const lat = posizione.coords.latitude.toFixed(2);
+        const lon = posizione.coords.longitude.toFixed(2);
+        
+        // Richiesta meteo semplificata
+        const risposta = await fetch(`https://wttr.in/${lat},${lon}?format=%c+%t`);
+        meteoEl.textContent = `Meteo: ${await risposta.text()}`;
+        
+      } catch {
+        meteoEl.textContent = "Meteo: attiva la geolocalizzazione";
+      }
+    }
+  </script>
+</body>
+</html>
