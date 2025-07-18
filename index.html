@@ -8,9 +8,6 @@
   <meta name="apple-mobile-web-app-title" content="Orologio Rosso">
   <title>Orologio Digitale Rosso</title>
   
-  <!-- Icona per iOS -->
-  <link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMjggMTI4Ij48cmVjdCB3aWR0aD0iMTI4IiBoZWlnaHQ9IjEyOCIgZmlsbD0iIzAwMCIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iNDAiIGZpbGw9IiNmZjAwMDAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGRvbWluYW50LWJhc2VsaW5lPSJtaWRkbGUiPjEyOjAwPC90ZXh0Pjwvc3ZnPg==">
-  
   <style>
     :root {
       --rosso: rgb(255, 0, 0);
@@ -35,88 +32,99 @@
       touch-action: manipulation;
     }
 
-    /* Contenitore principale */
-    .container {
+    /* Layout principale */
+    .main-container {
       display: flex;
       flex-direction: column;
       height: 100%;
     }
 
-    /* Sezione superiore: Orologio e Data */
-    .top-section {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      text-align: center;
-    }
-
-    #orologio {
-      font-size: 7rem;
-      font-weight: 700;
-      line-height: 1;
-      margin-bottom: 0;
-    }
-
+    /* Sezione data */
     #data {
       font-size: 2rem;
       font-weight: 500;
-      margin-top: 5px;
+      text-align: center;
+      margin-bottom: 5px;
     }
 
-    #meteo {
-      font-size: 1rem;
-      color: var(--bianco);
-      margin-top: 10px;
-    }
-
-    /* Sezione inferiore: Controlli */
-    .bottom-section {
-      margin-top: 20px;
-    }
-
-    .sveglia-container {
+    /* Contenitore orologio+controlli */
+    .orologio-container {
       display: flex;
       align-items: center;
-      gap: 10px;
-      margin-bottom: 15px;
+      justify-content: center;
+      gap: 20px;
+      flex-grow: 1;
+    }
+
+    /* Orologio */
+    #orologio {
+      font-size: 9rem;
+      font-weight: 700;
+      line-height: 1;
+      text-align: center;
+      min-width: 300px;
+    }
+
+    /* Controlli a destra dell'orologio */
+    .controls-right {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 15px;
+      height: 100%;
+      justify-content: center;
+    }
+
+    /* Gruppo sveglia */
+    .sveglia-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
     }
 
     input[type="time"] {
-      padding: 12px;
+      padding: 10px;
       border-radius: 8px;
       border: none;
       background: rgba(255, 255, 255, 0.1);
       color: white;
       font-size: 1rem;
-      flex: 1;
+      width: 120px;
     }
 
     button {
-      padding: 12px 20px;
+      padding: 10px;
       border-radius: 8px;
       border: none;
       background: var(--rosso);
       color: black;
       font-weight: bold;
       font-size: 1rem;
-      white-space: nowrap;
+      width: 120px;
     }
 
-    .lum-container {
-      margin-top: 15px;
+    /* Slider luminosità */
+    .lum-slider {
+      transform: rotate(270deg);
+      width: 100px;
+      margin: 30px 0;
     }
 
-    .lum-container label {
-      display: block;
+    .lum-slider-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .lum-slider-container label {
       color: var(--bianco);
-      font-size: 0.9rem;
-      margin-bottom: 5px;
+      font-size: 0.8rem;
+      margin-bottom: 10px;
+      writing-mode: vertical-rl;
+      transform: rotate(180deg);
     }
 
     input[type="range"] {
-      width: 100%;
       height: 30px;
       -webkit-appearance: none;
       background: transparent;
@@ -136,35 +144,72 @@
       border-radius: 4px;
     }
 
-    @media (max-width: 350px) {
-      #orologio {
-        font-size: 5.5rem;
+    /* Meteo */
+    #meteo {
+      font-size: 1rem;
+      color: var(--bianco);
+      text-align: center;
+      margin-top: 10px;
+    }
+
+    /* Responsive */
+    @media (max-width: 500px) {
+      .orologio-container {
+        flex-direction: column;
+        gap: 10px;
       }
-      #data {
-        font-size: 1.5rem;
+      
+      #orologio {
+        font-size: 6rem;
+        min-width: auto;
+      }
+      
+      .controls-right {
+        flex-direction: row;
+        gap: 20px;
+      }
+      
+      .lum-slider {
+        transform: rotate(0deg);
+        width: 120px;
+        margin: 0;
+      }
+      
+      .lum-slider-container label {
+        writing-mode: horizontal-tb;
+        transform: none;
       }
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <div class="top-section">
+  <div class="main-container">
+    <!-- Data in alto -->
+    <div id="data"></div>
+    
+    <!-- Orologio e controlli affiancati -->
+    <div class="orologio-container">
+      <!-- Orologio -->
       <div id="orologio">00:00</div>
-      <div id="data"></div>
-      <div id="meteo"></div>
+      
+      <!-- Controlli a destra -->
+      <div class="controls-right">
+        <!-- Controlli sveglia -->
+        <div class="sveglia-group">
+          <input type="time" id="sveglia">
+          <button onclick="impostaSveglia()">Attiva Sveglia</button>
+        </div>
+        
+        <!-- Slider luminosità verticale -->
+        <div class="lum-slider-container">
+          <label for="lumSlider">Intensità</label>
+          <input type="range" min="50" max="255" value="255" id="lumSlider" class="lum-slider">
+        </div>
+      </div>
     </div>
     
-    <div class="bottom-section">
-      <div class="sveglia-container">
-        <input type="time" id="sveglia">
-        <button onclick="impostaSveglia()">Attiva Sveglia</button>
-      </div>
-      
-      <div class="lum-container">
-        <label for="lumSlider">Intensità colore rosso</label>
-        <input type="range" min="50" max="255" value="255" id="lumSlider">
-      </div>
-    </div>
+    <!-- Meteo -->
+    <div id="meteo"></div>
   </div>
 
   <script>
