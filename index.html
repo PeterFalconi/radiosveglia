@@ -5,67 +5,223 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <title>Orologio Gigante</title>
+  <title>Orologio FullScreen</title>
   <style>
     :root {
-      --rosso: #ff0000;
-      --nero: #000000;
+      --colore-testo: #ff0000;
+      --colore-sfondo: #000000;
+      --dimensione-font: 135px;
     }
-    
+
     body {
-      background-color: var(--nero);
+      background-color: var(--colore-sfondo);
       margin: 0;
       padding: 0;
       height: 100vh;
       height: -webkit-fill-available;
       display: flex;
+      flex-direction: column;
       justify-content: center;
       align-items: center;
       overflow: hidden;
       touch-action: manipulation;
+      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
     }
 
     #orologio {
-      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-      font-size: 135px; /* Dimensione ottimale per iPhone 6s */
+      font-size: var(--dimensione-font);
       font-weight: 700;
-      color: var(--rosso);
+      color: var(--colore-testo);
       text-align: center;
       line-height: 1;
       letter-spacing: -5px;
       padding: 0 15px;
     }
 
-    /* Ottimizzazione specifica per iPhone 6s */
-    @media only screen 
-      and (device-width: 375px) 
-      and (device-height: 667px) 
-      and (-webkit-device-pixel-ratio: 2) {
-        #orologio {
-          font-size: 135px;
-          margin-top: -20px; /* Centratura perfetta */
-        }
+    #impostazioni-btn {
+      position: fixed;
+      top: 15px;
+      right: 15px;
+      width: 40px;
+      height: 40px;
+      background: rgba(0,0,0,0.5);
+      color: white;
+      border: none;
+      border-radius: 50%;
+      font-size: 20px;
+      z-index: 100;
+    }
+
+    #impostazioni-panel {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.9);
+      color: white;
+      padding: 20px;
+      box-sizing: border-box;
+      display: none;
+      z-index: 90;
+      overflow-y: auto;
+    }
+
+    .impostazione {
+      margin-bottom: 20px;
+    }
+
+    .impostazione label {
+      display: block;
+      margin-bottom: 5px;
+    }
+
+    input[type="color"], input[type="range"], select {
+      width: 100%;
+      padding: 8px;
+      border-radius: 5px;
+      border: 1px solid #333;
+      background: #111;
+      color: white;
+    }
+
+    button {
+      padding: 10px 15px;
+      background: #ff0000;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      margin-top: 10px;
     }
   </style>
 </head>
 <body>
   <div id="orologio">00:00</div>
+  
+  <button id="impostazioni-btn">⚙️</button>
+  
+  <div id="impostazioni-panel">
+    <h2>Impostazioni</h2>
+    
+    <div class="impostazione">
+      <label for="colore-testo">Colore numeri:</label>
+      <input type="color" id="colore-testo" value="#ff0000">
+    </div>
+    
+    <div class="impostazione">
+      <label for="colore-sfondo">Colore sfondo:</label>
+      <input type="color" id="colore-sfondo" value="#000000">
+    </div>
+    
+    <div class="impostazione">
+      <label for="dimensione-font">Dimensione numeri:</label>
+      <input type="range" id="dimensione-font" min="50" max="200" value="135">
+      <span id="dimensione-valore">135px</span>
+    </div>
+    
+    <div class="impostazione">
+      <label for="formato-ora">Formato ora:</label>
+      <select id="formato-ora">
+        <option value="24">24 ore</option>
+        <option value="12">12 ore</option>
+      </select>
+    </div>
+    
+    <button id="salva-impostazioni">Salva</button>
+    <button id="chiudi-impostazioni">Chiudi</button>
+  </div>
 
   <script>
-    // Aggiorna orologio ogni secondo
+    // Elementi DOM
+    const orologio = document.getElementById("orologio");
+    const impostazioniBtn = document.getElementById("impostazioni-btn");
+    const impostazioniPanel = document.getElementById("impostazioni-panel");
+    const salvaBtn = document.getElementById("salva-impostazioni");
+    const chiudiBtn = document.getElementById("chiudi-impostazioni");
+    
+    // Carica impostazioni salvate
+    function caricaImpostazioni() {
+      const impostazioni = JSON.parse(localStorage.getItem('orologioImpostazioni')) || {
+        coloreTesto: '#ff0000',
+        coloreSfondo: '#000000',
+        dimensioneFont: 135,
+        formatoOra: '24'
+      };
+      
+      document.documentElement.style.setProperty('--colore-testo', impostazioni.coloreTesto);
+      document.documentElement.style.setProperty('--colore-sfondo', impostazioni.coloreSfondo);
+      document.documentElement.style.setProperty('--dimensione-font', `${impostazioni.dimensioneFont}px`);
+      
+      document.getElementById('colore-testo').value = impostazioni.coloreTesto;
+      document.getElementById('colore-sfondo').value = impostazioni.coloreSfondo;
+      document.getElementById('dimensione-font').value = impostazioni.dimensioneFont;
+      document.getElementById('formato-ora').value = impostazioni.formatoOra;
+      document.getElementById('dimensione-valore').textContent = `${impostazioni.dimensioneFont}px`;
+      
+      return impostazioni;
+    }
+    
+    let impostazioni = caricaImpostazioni();
+    
+    // Aggiorna orologio
     function aggiornaOrologio() {
       const ora = new Date();
-      const ore = String(ora.getHours()).padStart(2, '0');
+      let ore = ora.getHours();
       const minuti = String(ora.getMinutes()).padStart(2, '0');
-      document.getElementById("orologio").textContent = `${ore}:${minuti}`;
+      
+      if (impostazioni.formatoOra === '12') {
+        const ampm = ore >= 12 ? 'PM' : 'AM';
+        ore = ore % 12 || 12;
+        orologio.textContent = `${ore}:${minuti} ${ampm}`;
+      } else {
+        ore = String(ore).padStart(2, '0');
+        orologio.textContent = `${ore}:${minuti}`;
+      }
+      
       setTimeout(aggiornaOrologio, 1000);
     }
     
-    // Avvia orologio al caricamento
-    document.addEventListener('DOMContentLoaded', aggiornaOrologio);
+    // Gestione impostazioni
+    impostazioniBtn.addEventListener('click', () => {
+      impostazioniPanel.style.display = 'block';
+    });
     
-    // Blocca orientamento orizzontale
-    screen.orientation.lock('portrait').catch(() => {});
+    chiudiBtn.addEventListener('click', () => {
+      impostazioniPanel.style.display = 'none';
+    });
+    
+    salvaBtn.addEventListener('click', () => {
+      const nuoveImpostazioni = {
+        coloreTesto: document.getElementById('colore-testo').value,
+        coloreSfondo: document.getElementById('colore-sfondo').value,
+        dimensioneFont: document.getElementById('dimensione-font').value,
+        formatoOra: document.getElementById('formato-ora').value
+      };
+      
+      localStorage.setItem('orologioImpostazioni', JSON.stringify(nuoveImpostazioni));
+      impostazioni = nuoveImpostazioni;
+      
+      document.documentElement.style.setProperty('--colore-testo', nuoveImpostazioni.coloreTesto);
+      document.documentElement.style.setProperty('--colore-sfondo', nuoveImpostazioni.coloreSfondo);
+      document.documentElement.style.setProperty('--dimensione-font', `${nuoveImpostazioni.dimensioneFont}px`);
+      
+      impostazioniPanel.style.display = 'none';
+    });
+    
+    // Aggiorna valore dimensione font in tempo reale
+    document.getElementById('dimensione-font').addEventListener('input', (e) => {
+      document.getElementById('dimensione-valore').textContent = `${e.target.value}px`;
+    });
+    
+    // Avvia tutto
+    document.addEventListener('DOMContentLoaded', () => {
+      aggiornaOrologio();
+      
+      // Service Worker per funzionamento offline
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('sw.js').catch(() => {});
+      }
+    });
   </script>
 </body>
 </html>
