@@ -2,100 +2,248 @@
 <html lang="it">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Radiosveglia Digitale</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>Radiosveglia iPhone 6s</title>
   <style>
+    :root {
+      --rosso-vintage: #ff3333;
+      --nero: #000000;
+    }
+    
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
     }
-
-    html, body {
-      background-color: black;
-      height: 100%;
-      width: 100%;
+    
+    body {
+      background-color: var(--nero);
+      height: 100vh;
+      height: -webkit-fill-available;
+      display: flex;
+      flex-direction: column;
+      font-family: 'Segment7Standard', monospace;
       overflow: hidden;
-      font-family: 'Courier New', monospace;
+      touch-action: manipulation;
     }
 
-    .container {
+    @font-face {
+      font-family: 'Segment7Standard';
+      src: url('data:font/woff2;base64,d09GMgABAAAAAATsAA8AAAAACBwAAASiAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP0ZGVE0cGh4GYACCUhEICoL8CIINLgUBNgIkA4cgC4NEABSFBgeEExvO9GQjexvZP4LBDkzY0fG1yN7/PzKMoDEQ2Xr2bCGjQNWqbdu2mG3btm3btm3btm3b5v+5M5OQkJDw3vve+9/3fX9VXV1dXZ1z5pxzq6u6q7oGDBgwYMCAAQMGDBgwYMCAAQMGDBgwYMCAAQMGDBgwYMCAAQMGDBgwYMCAAQMGDBgwYMCAAQMGDBgwYMCAAQMGDBgwYMCAAQMGDBgwYMCAAQMGDBgwYMCAAQMGDBgwYMCAAQMGDBgwYMCAAQMGDBgwYMCAAQMGDBgwYMCAAQMGDBgwYMCAAQMGDBgwYMCAAQMGDBgwYMCAAQMGDBgwYMCAAQMGDBgwYMCAAQMGDBgwYMCAAQMGDBgwYMCAAQMGDBgwYMCAAQMGDBgwYMCAAQMGDBgwYMCAAQMGDBgwYMCAAQMGDBgwYMCAAQMGDBgwYMCAAQMGDBgwYMCAAQMGDBgwYMCAAQMGDBgwYMCAAQMGDBgwYMCAAQMGDBgwYMCAAQMGDBgwYMCAAQMGDBgwYMCAAQMGDBgwYMCAAQMGDBgwYMCAAQMGDBgwYMCAAQMGDBgwYMCAAQMGDBgwYMCAAQMGDBgwYMCAAQMGDBgwYMCAAQMGDBgwYMCAAQMGDBgwYMCAAQMGDBgwYMCAAQMGDBgwYMCAAQMGDBgwYMCAAQMGDBgwYMCAAQMGDBgwYMCAAQMGDBgwYMCAAQMGDBgwYMCAAQMGDBgwYMCAAQMGDBgwYMCAAQMGDBgwYMCAAQMGDBgwYMCAAQMGDBgwYMCAAQMGDBgwYMCAAQMGDBgwYMCAAQMGDBgwYMCAAQMGDBgwYMCAAQMGDBgwYMCAAQMGDBgwYMCAAQMGDBgwYMCAAQMGDBgwYMCAAQMGDBgwYMCAAQMGDBgwYMCAAQMGDBgwYMCAAQMGDBgwYMCAAQMGDBgwYMCAAQMGDBgwYMCAAQMGDBgwYMCAAQMGDBgwYMCAAQMGDBgwYMCAAQMGDBgwYMCAAQMGDBgwYMCAAQMGDBgwYMCAAQMGDBgwYMCAAQMGDBgwYMCAAQMGDBgwYMCAAQMGDBgwYMCAAQMGDBgwYMCAAQMGDBgwYMCAAQMGDBgwYMCAAQMGDBgwYMCAAQMGDBgwYMCAAQMGDBgwYMCAAQMGDBgwYMCAAQMGDBgwYMCAAQMGDBgwYMCAAQMGDBgwYMCAAQMGDBgwYMCAAQMGDBgwYMCAAQMGDBgwYMCAAQMGDBgwYMCAAQMGDBgwYMCAAQMGDBgwYMCAAQMGDBgwYMCAAQMGDBgwYMCAAQMGDBgwYMCAAQMGDBgwYMCAAQMGDBgwYMCAAQMGDBgwYMCAAQMGDBgwYMCAAQMGDBgwYMCAAQMGDBgwYMCAAQMGDBgwYMCAAQMGDBgwYMCAAQMGDBgwYMCAAQMGDBgwYMCAAQMGDBgwYMCAAQMGDBgwYMCAAQMGDBgwYMCAAQMGDBgwYMCAAQMGDBgwYMCAAQMGDBgwYMCAAQMGDHwX8P8fAAD//5IjSao=') format('woff2');
+      font-weight: normal;
+      font-style: italic;
+    }
+
+    .orologio-container {
+      flex: 1;
       display: flex;
-      flex-direction: row;
+      flex-direction: column;
+      justify-content: center;
       align-items: center;
-      justify-content: space-between;
-      height: 100vh;
       padding: 10px;
     }
 
-    button {
-      background-color: #222;
-      color: white;
-      border: 2px solid red;
-      border-radius: 10px;
-      padding: 15px;
-      font-size: 2vh;
-      cursor: pointer;
-      user-select: none;
+    #orologio {
+      font-family: 'Segment7Standard', monospace;
+      font-size: 120px; /* Dimensione fissa per iPhone 6s */
+      color: var(--rosso-vintage);
+      text-shadow: 0 0 10px rgba(255, 51, 51, 0.7);
+      letter-spacing: 2px;
+      line-height: 0.9;
+      margin-bottom: 5px;
     }
 
-    .display {
-      flex-grow: 1;
+    #data {
+      font-family: 'Segment7Standard', monospace;
+      font-size: 24px;
+      color: var(--rosso-vintage);
       text-align: center;
-      color: red;
-      font-size: 30vw;
-      text-shadow: 0 0 10px red;
-      transition: opacity 0.3s ease;
+      margin-bottom: 20px;
     }
 
-    @media (orientation: portrait) {
-      .container {
-        flex-direction: column;
-      }
-      .display {
-        font-size: 20vw;
-      }
-      button {
-        margin: 10px 0;
-      }
+    .controls {
+      position: fixed;
+      bottom: 15px;
+      left: 0;
+      right: 0;
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      padding: 0 15px;
+    }
+
+    .control-group {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+
+    input[type="time"] {
+      background: rgba(0, 0, 0, 0.5);
+      border: 1px solid var(--rosso-vintage);
+      color: var(--rosso-vintage);
+      padding: 8px;
+      border-radius: 4px;
+      font-family: 'Segment7Standard', monospace;
+      font-size: 14px;
+      width: 110px;
+    }
+
+    button {
+      background: var(--rosso-vintage);
+      color: black;
+      border: none;
+      padding: 8px 0;
+      border-radius: 4px;
+      font-family: 'Segment7Standard', monospace;
+      font-size: 14px;
+      cursor: pointer;
+      width: 110px;
+    }
+
+    input[type="range"] {
+      width: 110px;
+      -webkit-appearance: none;
+      height: 4px;
+      background: rgba(255, 51, 51, 0.3);
+      border-radius: 2px;
+      margin-top: 5px;
+    }
+
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 15px;
+      height: 15px;
+      border-radius: 50%;
+      background: var(--rosso-vintage);
+      cursor: pointer;
+    }
+
+    .lum-label {
+      color: var(--rosso-vintage);
+      font-family: 'Segment7Standard', monospace;
+      font-size: 12px;
+      margin-bottom: 3px;
+    }
+
+    /* Ottimizzazione specifica per iPhone 6s */
+    @media only screen 
+      and (device-width: 375px) 
+      and (device-height: 667px) 
+      and (-webkit-device-pixel-ratio: 2) {
+        #orologio {
+          font-size: 110px;
+          margin-bottom: 0;
+        }
+        #data {
+          font-size: 20px;
+          margin-bottom: 15px;
+        }
+        .controls {
+          bottom: 10px;
+        }
     }
   </style>
 </head>
 <body>
+  <div class="orologio-container">
+    <div id="orologio">88:88</div>
+    <div id="data"></div>
+  </div>
 
-  <div class="container">
-    <button id="dim">◀ Dim</button>
-    <div class="display" id="clock">00:00</div>
-    <button id="bright">Bright ▶</button>
+  <div class="controls">
+    <div class="control-group">
+      <input type="time" id="sveglia">
+      <button onclick="impostaSveglia()">Sveglia</button>
+    </div>
+    <div class="control-group">
+      <div class="lum-label">Luminosità</div>
+      <input type="range" min="50" max="255" value="200" id="lumSlider">
+    </div>
   </div>
 
   <script>
-    const clock = document.getElementById('clock');
-    const dimButton = document.getElementById('dim');
-    const brightButton = document.getElementById('bright');
-
-    let brightness = 1;
-
-    function updateClock() {
-      const now = new Date();
-      const hours = now.getHours().toString().padStart(2, '0');
-      const minutes = now.getMinutes().toString().padStart(2, '0');
-      clock.textContent = `${hours}:${minutes}`;
+    // Elementi DOM
+    const orologio = document.getElementById("orologio");
+    const dataEl = document.getElementById("data");
+    const lumSlider = document.getElementById("lumSlider");
+    
+    // Variabili stato
+    let svegliaAttiva = false;
+    let svegliaOrario = null;
+    
+    // Inizializzazione
+    document.addEventListener('DOMContentLoaded', () => {
+      // Imposta luminosità
+      lumSlider.addEventListener("input", () => {
+        const val = lumSlider.value;
+        orologio.style.color = `rgba(255, ${val/3}, ${val/3}, 0.9)`;
+        orologio.style.textShadow = `0 0 ${val/10}px rgba(255, ${val/3}, ${val/3}, 0.7)`;
+        dataEl.style.color = `rgba(255, ${val/3}, ${val/3}, 0.9)`;
+      });
+      
+      // Avvia orologio
+      aggiornaOrologio();
+    });
+    
+    // Aggiorna orologio
+    function aggiornaOrologio() {
+      const ora = new Date();
+      
+      // Formatta l'ora (senza secondi)
+      const ore = String(ora.getHours()).padStart(2, '0');
+      const minuti = String(ora.getMinutes()).padStart(2, '0');
+      orologio.textContent = `${ore}:${minuti}`;
+      
+      // Formatta la data
+      dataEl.textContent = ora.toLocaleDateString("it-IT", { 
+        weekday: 'short', 
+        day: '2-digit', 
+        month: 'short'
+      }).replace(/,/g, '');
+      
+      // Controlla sveglia
+      if (svegliaAttiva && minuti === '00') {
+        controllaSveglia();
+      }
+      
+      setTimeout(aggiornaOrologio, 1000);
     }
-
-    setInterval(updateClock, 1000);
-    updateClock();
-
-    dimButton.addEventListener('click', () => {
-      brightness = Math.max(0.1, brightness - 0.1);
-      clock.style.opacity = brightness;
-    });
-
-    brightButton.addEventListener('click', () => {
-      brightness = Math.min(1, brightness + 0.1);
-      clock.style.opacity = brightness;
-    });
+    
+    // Gestione sveglia
+    function impostaSveglia() {
+      const inputSveglia = document.getElementById("sveglia");
+      
+      if (!inputSveglia.value) {
+        alert("Imposta l'orario della sveglia");
+        return;
+      }
+      
+      svegliaOrario = inputSveglia.value;
+      svegliaAttiva = true;
+      alert(`Sveglia impostata per le ${svegliaOrario}`);
+    }
+    
+    function controllaSveglia() {
+      const ora = new Date();
+      const ore = String(ora.getHours()).padStart(2, '0');
+      const minuti = String(ora.getMinutes()).padStart(2, '0');
+      
+      if (`${ore}:${minuti}` === svegliaOrario) {
+        suonaSveglia();
+      }
+    }
+    
+    function suonaSveglia() {
+      if ('vibrate' in navigator) {
+        navigator.vibrate([500, 200, 500]);
+      }
+      alert("⏰ Sveglia!");
+      svegliaAttiva = false;
+    }
   </script>
-
 </body>
 </html>
