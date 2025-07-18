@@ -11,9 +11,6 @@
   <!-- Icona per iOS -->
   <link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMjggMTI4Ij48cmVjdCB3aWR0aD0iMTI4IiBoZWlnaHQ9IjEyOCIgZmlsbD0iIzAwMCIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iNDAiIGZpbGw9IiNmZjAwMDAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGRvbWluYW50LWJhc2VsaW5lPSJtaWRkbGUiPjEyOjAwPC90ZXh0Pjwvc3ZnPg==">
   
-  <!-- Manifest PWA -->
-  <link rel="manifest" href="data:application/json;base64,ewogICJuYW1lIjogIk9yb2xvZ2lvIFJvc3NvIiwKICAic2hvcnRfbmFtZSI6ICJPcm9sb2dpbyIsCiAgInN0YXJ0X3VybCI6ICIuIiwKICAiZGlzcGxheSI6ICJzdGFuZGFsb25lIiwKICAiYmFja2dyb3VuZF9jb2xvciI6ICIjMDAwMDAwIiwKICAidGhlbWVfY29sb3IiOiAiI2ZmMDAwMCIKfQ==">
-  
   <style>
     :root {
       --rosso: rgb(255, 0, 0);
@@ -31,83 +28,100 @@
       background: black;
       color: var(--rosso);
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
       height: 100vh;
       height: -webkit-fill-available;
       overflow: hidden;
-      padding: 10px;
+      padding: 15px;
       touch-action: manipulation;
     }
-    
+
+    /* Contenitore principale */
+    .container {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+    }
+
+    /* Sezione superiore: Orologio e Data */
+    .top-section {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+    }
+
+    #orologio {
+      font-size: 7rem;
+      font-weight: 700;
+      line-height: 1;
+      margin-bottom: 0;
+    }
+
+    #data {
+      font-size: 2rem;
+      font-weight: 500;
+      margin-top: 5px;
+    }
+
     #meteo {
       font-size: 1rem;
-      margin-bottom: 5px;
       color: var(--bianco);
-      text-align: center;
-      min-height: 20px;
-      width: 100%;
+      margin-top: 10px;
     }
-    
-    #orologio {
-      font-size: 5.5rem;
-      font-weight: 700;
-      letter-spacing: 1px;
-      margin: 5px 0;
-      text-align: center;
-      line-height: 1;
+
+    /* Sezione inferiore: Controlli */
+    .bottom-section {
+      margin-top: 20px;
     }
-    
-    #data {
-      font-size: 1.3rem;
+
+    .sveglia-container {
+      display: flex;
+      align-items: center;
+      gap: 10px;
       margin-bottom: 15px;
-      text-align: center;
-      font-weight: 500;
     }
-    
-    #controlli {
-      margin-top: 15px;
-      width: 100%;
-      max-width: 300px;
-    }
-    
-    .gruppo-controllo {
-      margin-bottom: 12px;
-    }
-    
-    .gruppo-controllo label {
-      display: block;
-      margin-bottom: 3px;
-      color: var(--bianco);
-      font-size: 0.9rem;
-    }
-    
-    input[type="time"], button {
-      width: 100%;
-      padding: 10px;
-      border-radius: 6px;
+
+    input[type="time"] {
+      padding: 12px;
+      border-radius: 8px;
       border: none;
       background: rgba(255, 255, 255, 0.1);
       color: white;
-      font-size: 0.9rem;
+      font-size: 1rem;
+      flex: 1;
     }
-    
+
     button {
+      padding: 12px 20px;
+      border-radius: 8px;
+      border: none;
       background: var(--rosso);
       color: black;
       font-weight: bold;
-      margin-top: 8px;
+      font-size: 1rem;
+      white-space: nowrap;
     }
-    
+
+    .lum-container {
+      margin-top: 15px;
+    }
+
+    .lum-container label {
+      display: block;
+      color: var(--bianco);
+      font-size: 0.9rem;
+      margin-bottom: 5px;
+    }
+
     input[type="range"] {
       width: 100%;
       height: 30px;
       -webkit-appearance: none;
       background: transparent;
     }
-    
+
     input[type="range"]::-webkit-slider-thumb {
       -webkit-appearance: none;
       width: 20px;
@@ -115,29 +129,41 @@
       border-radius: 50%;
       background: var(--rosso);
     }
-    
+
     input[type="range"]::-webkit-slider-runnable-track {
       height: 4px;
       background: rgba(255, 255, 255, 0.2);
       border-radius: 4px;
     }
+
+    @media (max-width: 350px) {
+      #orologio {
+        font-size: 5.5rem;
+      }
+      #data {
+        font-size: 1.5rem;
+      }
+    }
   </style>
 </head>
 <body>
-  <div id="meteo"></div>
-  <div id="orologio">00:00:00</div>
-  <div id="data"></div>
-  
-  <div id="controlli">
-    <div class="gruppo-controllo">
-      <label for="sveglia">Imposta Sveglia</label>
-      <input type="time" id="sveglia">
-      <button onclick="impostaSveglia()">Attiva Sveglia</button>
+  <div class="container">
+    <div class="top-section">
+      <div id="orologio">00:00</div>
+      <div id="data"></div>
+      <div id="meteo"></div>
     </div>
     
-    <div class="gruppo-controllo">
-      <label for="lumSlider">Intensità Colore Rosso</label>
-      <input type="range" min="50" max="255" value="255" id="lumSlider">
+    <div class="bottom-section">
+      <div class="sveglia-container">
+        <input type="time" id="sveglia">
+        <button onclick="impostaSveglia()">Attiva Sveglia</button>
+      </div>
+      
+      <div class="lum-container">
+        <label for="lumSlider">Intensità colore rosso</label>
+        <input type="range" min="50" max="255" value="255" id="lumSlider">
+      </div>
     </div>
   </div>
 
@@ -158,6 +184,7 @@
       lumSlider.addEventListener("input", () => {
         const val = lumSlider.value;
         orologio.style.color = `rgb(${val}, 0, 0)`;
+        dataEl.style.color = `rgb(${val}, 0, 0)`;
       });
       
       // Avvia orologio
@@ -167,15 +194,14 @@
       mostraMeteo();
     });
     
-    // Aggiorna orologio
+    // Aggiorna orologio (senza secondi)
     function aggiornaOrologio() {
       const ora = new Date();
       
-      // Formatta l'ora
+      // Formatta l'ora (senza secondi)
       const ore = String(ora.getHours()).padStart(2, '0');
       const minuti = String(ora.getMinutes()).padStart(2, '0');
-      const secondi = String(ora.getSeconds()).padStart(2, '0');
-      orologio.textContent = `${ore}:${minuti}:${secondi}`;
+      orologio.textContent = `${ore}:${minuti}`;
       
       // Formatta la data
       dataEl.textContent = ora.toLocaleDateString("it-IT", { 
@@ -186,11 +212,11 @@
       });
       
       // Controlla sveglia
-      if (svegliaAttiva && secondi === '00') {
+      if (svegliaAttiva) {
         controllaSveglia();
       }
       
-      setTimeout(aggiornaOrologio, 1000 - ora.getMilliseconds());
+      setTimeout(aggiornaOrologio, 1000);
     }
     
     // Gestione sveglia
